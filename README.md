@@ -16,8 +16,13 @@ It reads the CVS data and the JSON file produced by test.R to make plots and tab
 myjson.json
 -----------
 
-JSON file requested in the test
+JSON file requested in the test.
+The most similar partner to "de1201d4d1b6" is found to be "t35tde1201".
+This data can be used to quickly inspect for each partner the top markets and the similar partners, for when increasing the impact of a specific partern and/or market.
 
-The most similar partner to "de1201d4d1b6" is found to be "t35tde1201"
+How to tun
+----------
 
-This data is used in to quickly inspect for each partner the top markets and the similar partners.
+The scripts can be executed in plan R or R-studio, modulo installing the needed libraries.
+The input data is to be stored in a folder called "Expedia" and the ouput plots and tables are saved to a folder called "Expedia/plots".
+These folders needs to be created before running the scripts.
