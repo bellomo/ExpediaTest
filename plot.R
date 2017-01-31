@@ -16,6 +16,9 @@ data = read.csv("Expedia/expedia_casestudy_20170127.csv",
 #################################################################################
 jdata = fromJSON("Expedia/myjson.json")
 
+#################################################################################
+# all transactions plot
+#################################################################################
 pdf("Expedia/plots/All_transactions.pdf")
 hist(data$bkgs,col = "gray", xlab = "booking value", 
      main = "All transactions", breaks = 100,
@@ -149,24 +152,6 @@ for(m in listTop10Markets) {
   }
 }
 
-m = listTop10Markets[1]
-topP = totbkgs_per_mkt_per_affiliate[totbkgs_per_mkt_per_affiliate$mkt==m,2:3]
-listTop10Partners = topP$affiliate_id
-for(p in listTop10Partners) {
-  bkg = data[data$affiliate_id==p & data$mkt==m,3:3]
-  if(length(bkg)>50) {
-    pdf(paste("Expedia/plots/beanplot_top",which(m==listTop10Markets),"_market_partner_",p,".pdf",sep=""), width = 7)
-    beanplot(bkg,
-             ylab = "Booking value",     
-             col = c("#CAB2D6", "#33A02C", "#B2DF8A"),
-             log="", 
-             cex.lab=1.5, cex.axis=1.5, cex.main=1.5,
-             ylim = c(-0.1, 1.2),
-             innerborder = "black",
-             names = c(as.character(p)))
-    dev.off()
-  }
-}
 
 ##########################################################################################
 # Order per expected booking rates for 1000 rooms
@@ -207,3 +192,26 @@ for(m in listTop10Markets) {
   dev.off()
   
 }
+
+
+##########################################################################################
+# Plots booking value distribiutions for all partners in top 1st market
+##########################################################################################
+#m = listTop10Markets[1]
+#topP = totbkgs_per_mkt_per_affiliate[totbkgs_per_mkt_per_affiliate$mkt==m,2:3]
+#listTop10Partners = topP$affiliate_id
+#for(p in listTop10Partners) {
+#  bkg = data[data$affiliate_id==p & data$mkt==m,3:3]
+#  if(length(bkg)>50) {
+#    pdf(paste("Expedia/plots/beanplot_top",which(m==listTop10Markets),"_market_partner_",p,".pdf",sep=""), width = 7)
+#    beanplot(bkg,
+#             ylab = "Booking value",     
+#             col = c("#CAB2D6", "#33A02C", "#B2DF8A"),
+#             log="", 
+#             cex.lab=1.5, cex.axis=1.5, cex.main=1.5,
+#             ylim = c(-0.1, 1.2),
+#             innerborder = "black",
+#             names = c(as.character(p)))
+#    dev.off()
+#  }
+#}

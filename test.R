@@ -6,10 +6,10 @@ library(RColorBrewer)
 #################################################################################
 
 # Set to 1(0) to load(compute) the partner similarity matrices
-loadSim = 1
+loadSim = 0
 
 # Set to 1(0) to write(not-write) the JSON file
-writeJSON = 0
+writeJSON = 1
 
 #################################################################################
 # load the data
@@ -22,8 +22,6 @@ affiliate_id_list = unique(data$affiliate_id)
 # total number of partners
 num_of_affiliates = length(affiliate_id_list)
 
-### TEST num_of_affiliates = 10
-
 # list of markets
 mkt_list = unique(data$mkt)
 
@@ -31,12 +29,11 @@ mkt_list = unique(data$mkt)
 num_of_mkts = length(mkt_list)
 
 #################################################################################
-# Top 10 markers per partner
+# Compute total booking value per partner and per market
 #################################################################################
 # total booking value per partner and per market
 totbkgs_per_id_per_mkt = aggregate(data$bkgs, by=list(affiliate_id=data$affiliate_id,mkt=data$mkt),FUN=sum)
-
-# number of markets per partner (used later)
+# number of markets per partner
 num_of_mkt_per_partner = aggregate(totbkgs_per_id_per_mkt$mkt, by=list(affiliate_id=totbkgs_per_id_per_mkt$affiliate_id), FUN=length)
 
 #################################################################################
