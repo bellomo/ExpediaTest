@@ -29,9 +29,22 @@ dev.off()
 # mean booking value per market
 #################################################################################
 bkgs_mean = aggregate(data$bkgs, by=list(market=data$mkt),FUN=mean)
+bkgs_mean = bkgs_mean[order(bkgs_mean$x,decreasing = TRUE),]
 pdf("Expedia/plots/mean_bkg_value_markets.pdf")
 plot(bkgs_mean[,2:2],xlab = "Markets", ylab = "Mean booking value",
      cex.lab=1.5, cex.axis=1.5, cex.main=1.5)
+dev.off()
+d = head(bkgs_mean, n=10)
+rownames(d) <- c(1:(dim(d)[1]))
+colnames(d) <- c("Market", "Average bkg value")
+nbgks = c()
+for (m in d$Market) {
+  nbgks = c(nbgks, length(data[data$mkt==m,3:3]))
+}
+d$`Number of bkgs` <- nbgks
+d[,-1] <- round(d[,-1],digits = 2)
+pdf("Expedia/plots/table_markets_tails.pdf")
+textplot(d)
 dev.off()
 
 #################################################################################
@@ -48,6 +61,22 @@ dev.off()
 #################################################################################
 totbkgs_per_mkt = aggregate(data$bkgs, by=list(mkt=data$mkt),FUN=sum)
 totbkgs_per_mkt <- totbkgs_per_mkt[order(totbkgs_per_mkt$x, decreasing = TRUE),]
+
+# first print the table with top markets per mean 
+d = bkgs_mean[bkgs_mean$market %in% listTop10Markets,]
+rownames(d) <- c(1:(dim(d)[1]))
+colnames(d) <- c("Market", "Average bkg value")
+nbgks = c()
+for (m in d$Market) {
+  nbgks = c(nbgks, length(data[data$mkt==m,3:3]))
+}
+d$`Number of bkgs` <- nbgks
+d[,-1] <- round(d[,-1],digits = 2)
+pdf("Expedia/plots/table_markets_top10n.pdf")
+textplot(d)
+dev.off()
+
+# then per volume in % 
 totbkgs_per_mkt[,2:2] = 100*totbkgs_per_mkt[,2:2]/sum(totbkgs_per_mkt[,2:2])
 cat("Top 10 markets (% of booking value) \n")
 print(head(totbkgs_per_mkt, n=10))
@@ -156,8 +185,8 @@ for(m in listTop10Markets) {
 ##########################################################################################
 # Order per expected booking rates for 1000 rooms
 ##########################################################################################
-expbkgs_per_mkt_per_affiliate$lval = (as.numeric(expbkgs_per_mkt_per_affiliate$mean) - as.numeric(expbkgs_per_mkt_per_affiliate$sigma))
-expbkgs_per_mkt_per_affiliate$rval = (as.numeric(expbkgs_per_mkt_per_affiliate$mean) + as.numeric(expbkgs_per_mkt_per_affiliate$sigma))
+expbkgs_per_mkt_per_affiliate$lval = (as.numeric(expbkgs_per_mkt_per_affiliate$mean) - 2*as.numeric(expbkgs_per_mkt_per_affiliate$sigma))
+expbkgs_per_mkt_per_affiliate$rval = (as.numeric(expbkgs_per_mkt_per_affiliate$mean) + 2*as.numeric(expbkgs_per_mkt_per_affiliate$sigma))
 listTop10Markets = (head(totbkgs_per_mkt, n=10))[,1:1]
 for(m in listTop10Markets) {
   topP = expbkgs_per_mkt_per_affiliate[expbkgs_per_mkt_per_affiliate$mkt==m,2:6]
@@ -192,6 +221,28 @@ for(m in listTop10Markets) {
   dev.off()
   
 }
+
+
+
+
+########
+listTop10Markets = (head(totbkgs_per_mkt, n=10))[,1:1]
+for(m in listTop10Markets) {
+  topP = totbkgs_per_mkt_per_affiliate[totbkgs_per_mkt_per_affiliate$mkt==m,2:3]
+  topP = topP[order(topP$x,decreasing = TRUE),]
+  listTop10Partners = (head(topP,n=10))$affiliate_id
+  topP = expbkgs_per_mkt_per_affiliate[expbkgs_per_mkt_per_affiliate$mkt==m,2:6]
+  topP = topP[topP$affiliate_id %in% listTop10Partners,]
+  rownames(topP) <- c(1:(dim(topP)[1]))
+  colnames(topP) <- c("Partner", "Mean", "Sigma", "Low Bkg", "High Bkg")
+  topPP = topP[,c("Partner","Low Bkg","High Bkg")]
+  topPP[,-1] <- round(topPP[,-1],digits = 1)
+  pdf(paste("Expedia/plots/table_partners_tot_top",which(m==listTop10Markets),"market.pdf",sep=""))
+  textplot(head(topPP,n=10))
+  dev.off()
+}
+
+
 
 
 ##########################################################################################
