@@ -12,3 +12,12 @@ plot.R
 ------
 
 It reads the CVS data and the JSON file produced by test.R to make plots and tables.
+
+myjson.json
+-----------
+
+JSON file requested in the test
+
+The most similar partner to "de1201d4d1b6" is found to be "t35tde1201"
+
+This data is used in to quickly inspect for each partner the top markets and the similar partners.
