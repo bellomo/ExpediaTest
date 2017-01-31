@@ -133,7 +133,7 @@ for(m in listTop10Markets) {
                      as.character(listTop10Partners[5])))
   dev.off()
   
-  # compute the expected booking value for 100 rooms averaging on 1000 bootstrap samples
+  # compute the expected booking value for 1000 rooms averaging on 1000 bootstrap samples
   listTop10Partners = topP$affiliate_id
   #cat("market : ",m,"\n")
   for(p in listTop10Partners) {
@@ -146,7 +146,7 @@ for(m in listTop10Markets) {
         newx <- sample(x, 1000, replace=TRUE) + rnorm(1000, 0, d$bw)
         sums = c(sums, sum(newx))        
       }
-      #cat("    average exp bkg for 100 rooms = ",mean(sums)," +- ",sd(sums),"\n")
+      #cat("    average exp bkg for 1000 rooms = ",mean(sums)," +- ",sd(sums),"\n")
       expbkgs_per_mkt_per_affiliate[nrow(expbkgs_per_mkt_per_affiliate)+1,] = c(as.character(m), as.character(p), mean(sums), sd(sums))
     }
   }
