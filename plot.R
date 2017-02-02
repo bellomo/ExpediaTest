@@ -61,6 +61,7 @@ dev.off()
 #################################################################################
 totbkgs_per_mkt = aggregate(data$bkgs, by=list(mkt=data$mkt),FUN=sum)
 totbkgs_per_mkt <- totbkgs_per_mkt[order(totbkgs_per_mkt$x, decreasing = TRUE),]
+listTop10Markets = (head(totbkgs_per_mkt, n=10))[,1:1]
 
 # first print the table with top markets per mean 
 d = bkgs_mean[bkgs_mean$market %in% listTop10Markets,]
@@ -137,7 +138,6 @@ for(p in listTop10Partners) {
 
 expbkgs_per_mkt_per_affiliate = data.frame("mkt"=character(),"affiliate_id"=character(),"mean"=numeric(),"sigma"=numeric(),stringsAsFactors=FALSE)
 totbkgs_per_mkt_per_affiliate = aggregate(data$bkgs, by=list(mkt=data$mkt,affiliate_id=data$affiliate_id),FUN=sum)
-listTop10Markets = (head(totbkgs_per_mkt, n=10))[,1:1]
 for(m in listTop10Markets) {
   topP = totbkgs_per_mkt_per_affiliate[totbkgs_per_mkt_per_affiliate$mkt==m,2:3]
   topP = topP[order(topP$x,decreasing = TRUE),]
@@ -173,10 +173,13 @@ for(m in listTop10Markets) {
       sums = c()
       for(j in 1:1000) {
         newx <- sample(x, 1000, replace=TRUE) + rnorm(1000, 0, d$bw)
+        #newx <- sample(x, length(x), replace=TRUE) + rnorm(length(x), 0, d$bw)
         sums = c(sums, sum(newx))        
       }
       #cat("    average exp bkg for 1000 rooms = ",mean(sums)," +- ",sd(sums),"\n")
-      expbkgs_per_mkt_per_affiliate[nrow(expbkgs_per_mkt_per_affiliate)+1,] = c(as.character(m), as.character(p), mean(sums), sd(sums))
+      mymean = mean(sums)#*1000/length(x)
+      mysd = sd(sums)#*1000/length(x)
+      expbkgs_per_mkt_per_affiliate[nrow(expbkgs_per_mkt_per_affiliate)+1,] = c(as.character(m), as.character(p), mymean, mysd)
     }
   }
 }
